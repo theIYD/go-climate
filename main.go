@@ -36,7 +36,13 @@ type Weather struct {
 
 func main() {
 	apikey := os.Getenv("API_KEY")
-	url := fmt.Sprintf("https://api.weatherapi.com/v1/forecast.json?key=%s&q=Kormangala,Bangalore&days=1&aqi=no&alerts=no", apikey)
+	place := "Bangalore"
+
+	if len(os.Args) >= 2 {
+		place = os.Args[1]
+	}
+
+	url := fmt.Sprintf("https://api.weatherapi.com/v1/forecast.json?key=%s&q=%s&days=1&aqi=no&alerts=no", apikey, place)
 	res, err := http.Get(url)
 	if err != nil {
 		panic(err)
@@ -73,6 +79,6 @@ func main() {
 			continue
 		}
 
-		fmt.Printf("%s - %.0fC, %.0f%% , %s\n", date.Format("15:04"), hour.TempC, hour.ChanceOfRain, hour.Condition.Text)
+		fmt.Printf("%s - %.0fC, %.0f%%, %s\n", date.Format("15:04"), hour.TempC, hour.ChanceOfRain, hour.Condition.Text)
 	}
 }
