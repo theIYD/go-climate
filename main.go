@@ -59,7 +59,6 @@ func main() {
 		panic(err)
 	}
 
-	// fmt.Println(weather)
 	location, current, hours := weather.Location, weather.Current, weather.Forecast.Forecastday[0].Hour
 
 	fmt.Printf(
@@ -69,6 +68,11 @@ func main() {
 
 	for _, hour := range hours {
 		date := time.Unix(hour.TimeEpoch, 0)
-		fmt.Printf("%s - %.0fC, %.0f, %s\n", date.Format("15:04"), hour.TempC, hour.ChanceOfRain, hour.Condition.Text)
+
+		if date.Before(time.Now()) {
+			continue
+		}
+
+		fmt.Printf("%s - %.0fC, %.0f%% , %s\n", date.Format("15:04"), hour.TempC, hour.ChanceOfRain, hour.Condition.Text)
 	}
 }
