@@ -6,6 +6,7 @@ import (
 	"io"
 	"net/http"
 	"os"
+	"time"
 )
 
 type Weather struct {
@@ -27,7 +28,7 @@ type Weather struct {
 				Condition struct {
 					Text string `json:"text"`
 				} `json:"condition"`
-				ChaneOfRain float64 `json:"chance_of_rain"`
+				ChanceOfRain float64 `json:"chance_of_rain"`
 			} `json:"hour"`
 		} `json:"forecastday"`
 	} `json:"forecast"`
@@ -58,5 +59,16 @@ func main() {
 		panic(err)
 	}
 
-	fmt.Println(weather)
+	// fmt.Println(weather)
+	location, current, hours := weather.Location, weather.Current, weather.Forecast.Forecastday[0].Hour
+
+	fmt.Printf(
+		"%s, %s: %.0fC, %s\n",
+		location.Name, location.Country, current.TempC, current.Condition.Text,
+	)
+
+	for _, hour := range hours {
+		date := time.Unix(hour.TimeEpoch, 0)
+		fmt.Printf("%s - %.0fC, %.0f, %s\n", date.Format("15:04"), hour.TempC, hour.ChanceOfRain, hour.Condition.Text)
+	}
 }
